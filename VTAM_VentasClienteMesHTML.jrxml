@@ -1,0 +1,1015 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DEMO_Ventas" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#ACC5D7"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="dataset1">
+		<parameter name="org_id" class="java.lang.String">
+			<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+		</parameter>
+		<parameter name="agente" class="java.lang.String">
+			<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+		</parameter>
+		<parameter name="familia" class="java.lang.String">
+			<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+		</parameter>
+		<parameter name="subfamilia" class="java.lang.String">
+			<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+		</parameter>
+		<parameter name="cliente" class="java.lang.String"/>
+		<parameter name="marca" class="java.lang.String"/>
+		<parameter name="producto" class="java.lang.String"/>
+		<parameter name="servicio" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT COALESCE((SELECT name FROM ad_org WHERE ad_org_id = $P{org_id} LIMIT 1),'Todas')
+AS organizacion,
+COALESCE((SELECT name FROM ad_user WHERE ad_user_id = $P{agente} LIMIT 1),'Todos')
+AS agente,
+COALESCE((SELECT name FROM dmprod_subfamilia WHERE dmprod_subfamilia_id = $P{subfamilia} LIMIT 1),'Todas')
+AS subfamilia,
+COALESCE((SELECT name FROM c_bpartner WHERE c_bpartner_id = $P{cliente} LIMIT 1),'Todos')
+AS cliente,
+COALESCE((SELECT name FROM tmarcas_marcas WHERE tmarcas_marcas_id = $P{marca} LIMIT 1),'Todas')
+AS marca,
+COALESCE((SELECT name FROM m_product WHERE m_product_id = $P{producto} LIMIT 1),'Todos')
+AS producto]]>
+		</queryString>
+		<field name="organizacion" class="java.lang.String"/>
+		<field name="agente" class="java.lang.String"/>
+		<field name="subfamilia" class="java.lang.String"/>
+		<field name="cliente" class="java.lang.String"/>
+		<field name="marca" class="java.lang.String"/>
+		<field name="producto" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="BASE_WEB" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/opt/OpenbravoERP-3.0/openbravo-erp/web"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USER_CLIENT" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USER_ORG" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["'0','51F2AF9E31D326EC0131D33B8BFF07B5','3421'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="org_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="year" class="java.lang.String">
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+	<parameter name="agente" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cliente" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="familia" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="subfamilia" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="marca" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="producto" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="servicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="month" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="day" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[01]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_agente" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{agente}.equals("") ? " ": " AND i.salesrep_id = '" + $P{agente} + "'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_familia" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{familia}.equals("") ? " ": " AND p.em_dmprod_familia = '" + $P{familia} + "'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_cliente" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{cliente}.equals("") ? " ": " AND i.c_bpartner_id = '" + $P{cliente} + "'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_subfamilia" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{subfamilia}.equals("") ? " ": " AND  p.em_dmprod_subfamilia_id='" + $P{subfamilia} + "'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_marca" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{marca}.equals("") ? " ": "AND p.em_tmarcas_marcas_id = '" + $P{marca} + "'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_producto" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{producto}.equals("") ? " ": "AND p.m_product_id = '" + $P{producto} + "'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_servicio" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{servicio}.equals("") ? " ": "AND p.producttype = '" + $P{servicio} + "'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_org_id" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{org_id}.equals("") ? " ": "AND i.ad_org_id='" + $P{org_id}+"'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m1" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-01-01'":"'"+$P{year}+"-01-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m2" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-02-01'":"'"+$P{year}+"-02-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m3" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-03-01'":"'"+$P{year}+"-03-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m4" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-04-01'":"'"+$P{year}+"-04-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m5" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-05-01'":"'"+$P{year}+"-05-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m6" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-06-01'":"'"+$P{year}+"-06-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m7" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-07-01'":"'"+$P{year}+"-07-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m8" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-08-01'":"'"+$P{year}+"-08-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m9" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-09-01'":"'"+$P{year}+"-09-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m10" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-10-01'":"'"+$P{year}+"-10-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m11" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-11-01'":"'"+$P{year}+"-11-01'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aux_date_m12" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{year}==null? "'2012-12-01'":"'"+$P{year}+"-12-01'"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+cliente,
+COALESCE(SUM(m1),0) AS m1,
+COALESCE(SUM(m2),0) AS m2,
+COALESCE(SUM(m3),0) AS m3,
+COALESCE(SUM(m4),0) AS m4,
+COALESCE(SUM(m5),0) AS m5,
+COALESCE(SUM(m6),0) AS m6,
+COALESCE(SUM(m7),0) AS m7,
+COALESCE(SUM(m8),0) AS m8,
+COALESCE(SUM(m9),0) AS m9,
+COALESCE(SUM(m10),0) AS m10,
+COALESCE(SUM(m11),0) AS m11,
+COALESCE(SUM(m12),0) AS m12,
+COALESCE(SUM(acum),0) AS acum
+FROM
+(SELECT
+bp."name" AS cliente,
+il.qtyinvoiced AS cantidad,
+il.linenetamt AS monto,
+i.dateinvoiced AS fecha,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m1} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m1}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m1} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m1}) AND doc.docbasetype = 'ARI'
+ THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m1,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m2} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m2}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m2} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m2})  AND doc.docbasetype = 'ARI'
+ THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m2,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m3} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m3}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m3} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m3})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m3,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m4} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m4}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m4} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m4})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m4,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m5} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m5}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m5} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m5})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m5,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m6} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m6}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m6} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m6})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m6,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m7} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m7}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m7} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m7}) THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m7,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m8} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m8}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m8} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m8})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m8,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m9} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m9}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)* -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m9} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m9})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m9,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m10} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m10}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m10} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m10})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m10,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m11} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m11}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m11} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m11})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m11,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m12} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m12}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m12} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m12})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS m12,
+
+CASE
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m1} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m12}) AND doc.docbasetype = 'ARC'
+AND (doc.em_ajgar_isajgar = 'Y'
+OR doc.em_dev_isdev = 'Y'
+OR doc.em_cascos_iscascos = 'Y')
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced) * -1
+WHEN i.dateinvoiced::DATE >= $P!{aux_date_m1} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m12})  AND doc.docbasetype = 'ARI'
+THEN dmprod_cantidad_litros("p".m_product_id,"p".em_dmprod_subfamilia_id,il.qtyinvoiced)
+END AS acum,
+
+CASE
+WHEN "p".producttype = 'I' THEN 'PRODUCTO'
+WHEN "p".producttype = 'S' THEN 'SERVICIO'
+ELSE 'OTRO'
+END AS "Tipo"
+
+
+FROM
+"public".c_invoiceline AS il
+LEFT JOIN "public".c_invoice AS i ON il.c_invoice_id = i.c_invoice_id AND i.docstatus = 'CO' AND i.issotrx = 'Y'
+LEFT JOIN "public".c_bpartner AS bp ON i.c_bpartner_id = bp.c_bpartner_id
+LEFT JOIN "public".m_product AS "p" ON il.m_product_id = "p".m_product_id
+LEFT JOIN "public".ad_user AS us ON i.salesrep_id = us.ad_user_id
+LEFT JOIN "public".c_doctype AS doc ON i.c_doctype_id = doc.c_doctype_id
+WHERE
+il.ad_client_id IN ($P!{USER_CLIENT})
+AND doc.docbasetype IN ('ARC','ARI')
+AND doc.em_vtadist_isrefacturacion = 'N'
+AND i.dateinvoiced::DATE >= $P!{aux_date_m1} AND i.dateinvoiced::DATE <= last_day($P!{aux_date_m12})
+$P!{aux_org_id}
+$P!{aux_agente}
+$P!{aux_familia}
+$P!{aux_subfamilia}
+$P!{aux_marca}
+$P!{aux_cliente}
+$P!{aux_producto}
+$P!{aux_servicio}
+--AND us.ad_user_id = '9355ED99F399404F830CA6396DDB94DC'
+--AND "p".em_dmprod_familia = 'OTROS'
+--AND "p".em_dmprod_subfamilia_id = 'FE79001635EC49088F5045ED5D178FDA'
+--AND "p".em_tmarcas_marcas_id = '0B2EB3D222F94F01901F217733CE419D'
+--AND i.c_bpartner_id = '534762C27B754A4AB52A99496520E285'
+--AND "p".m_product_id = 'BE7CF0E83B9946F1BDF2C9662B391E20'
+--AND "p".producttype = 'I'
+) AS temporal
+GROUP BY cliente
+ORDER BY acum DESC, cliente ASC
+--il.ad_client_id = '2A43480AA2424DC78A3549C2EA0B8AA3']]>
+	</queryString>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="m1" class="java.math.BigDecimal"/>
+	<field name="m2" class="java.math.BigDecimal"/>
+	<field name="m3" class="java.math.BigDecimal"/>
+	<field name="m4" class="java.math.BigDecimal"/>
+	<field name="m5" class="java.math.BigDecimal"/>
+	<field name="m6" class="java.math.BigDecimal"/>
+	<field name="m7" class="java.math.BigDecimal"/>
+	<field name="m8" class="java.math.BigDecimal"/>
+	<field name="m9" class="java.math.BigDecimal"/>
+	<field name="m10" class="java.math.BigDecimal"/>
+	<field name="m11" class="java.math.BigDecimal"/>
+	<field name="m12" class="java.math.BigDecimal"/>
+	<field name="acum" class="java.math.BigDecimal"/>
+	<variable name="org_id" class="java.lang.String">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[new String($P{USER_ORG}).split(",")[1].substring(1,33)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m1}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m2}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m3}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m4" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m4}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m5}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m6" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m6}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m7" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m7}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m8" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m8}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m9" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m9}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m10" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m10}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m11" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m11}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_m12" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{m12}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sum_acum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{acum}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="77" splitType="Stretch">
+			<staticText>
+				<reportElement x="170" y="0" width="454" height="20" forecolor="#00447B"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VENTAS MENSUALES POR CLIENTE]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="193" y="25" width="279" height="23"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="dataset1">
+						<datasetParameter name="org_id">
+							<datasetParameterExpression><![CDATA[$P{org_id}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="agente">
+							<datasetParameterExpression><![CDATA[$P{agente}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="familia">
+							<datasetParameterExpression><![CDATA[$P{familia}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="subfamilia">
+							<datasetParameterExpression><![CDATA[$P{subfamilia}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="cliente">
+							<datasetParameterExpression><![CDATA[$P{cliente}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="marca">
+							<datasetParameterExpression><![CDATA[$P{marca}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="producto">
+							<datasetParameterExpression><![CDATA[$P{producto}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="servicio">
+							<datasetParameterExpression><![CDATA[$P{servicio}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="23" width="279">
+						<staticText>
+							<reportElement style="Column header" x="0" y="0" width="90" height="10" forecolor="#000000"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Unidad de negocio:]]></text>
+						</staticText>
+						<textField isStretchWithOverflow="true">
+							<reportElement style="Detail" positionType="Float" x="90" y="0" width="189" height="10"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8"/>
+							</textElement>
+							<textFieldExpression class="java.lang.String"><![CDATA[$F{organizacion}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement style="Column header" x="0" y="10" width="90" height="10" forecolor="#000000"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Cliente:]]></text>
+						</staticText>
+						<textField isStretchWithOverflow="true">
+							<reportElement style="Detail" positionType="Float" x="90" y="10" width="189" height="10"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8"/>
+							</textElement>
+							<textFieldExpression class="java.lang.String"><![CDATA[$F{cliente}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<textField pattern="">
+				<reportElement x="627" y="25" width="157" height="10" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{year}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="534" y="25" width="93" height="10" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="534" y="35" width="93" height="12" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de impresión:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="627" y="35" width="157" height="12" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Column header" x="665" y="0" width="74" height="12" forecolor="#010101"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{PAGE_NUMBER} + " "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="739" y="0" width="62" height="12" forecolor="#010101"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["/ " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Right" isUsingCache="true">
+				<reportElement x="10" y="0" width="85" height="45" isRemoveLineWhenBlank="true"/>
+				<imageExpression class="java.awt.Image"><![CDATA[org.openbravo.erpCommon.utility.Utility.showImageLogo("yourcompanydoc",$V{org_id})]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="16">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} != 1]]></printWhenExpression>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="740" y="0" width="62" height="12" forecolor="#010101"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["/ " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Column header" x="666" y="0" width="74" height="12" forecolor="#010101"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{PAGE_NUMBER} + " "]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="534" y="0" width="132" height="12" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="397" y="0" width="137" height="12" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DE IMPRESIÓN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="78" y="0" width="318" height="12" forecolor="#00447B"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VENTAS MENSUALES POR CLIENTE]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="2" forecolor="#00447B" backcolor="#00447B"/>
+			</frame>
+			<staticText>
+				<reportElement style="Column header" x="239" y="2" width="49" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ene]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="288" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Feb]]></text>
+			</staticText>
+			<frame>
+				<reportElement mode="Opaque" x="0" y="18" width="802" height="2" forecolor="#000000" backcolor="#00447B"/>
+			</frame>
+			<staticText>
+				<reportElement style="Column header" x="0" y="4" width="239" height="12" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="329" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mzo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="369" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Abr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="410" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[May]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="491" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jul]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="450" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jun]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="531" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ago]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="694" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dic]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="614" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Oct]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="654" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nov]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="574" y="2" width="40" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sep]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="745" y="2" width="50" height="14" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Acum]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="1" y="0" width="801" height="18" forecolor="#000000"/>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="238" y="0" width="50" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="288" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="0" y="0" width="238" height="18"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{cliente}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="328" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="409" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="531" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m8}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="490" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m7}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="450" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="369" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="573" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m9}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="613" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m10}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="693" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m12}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="653" y="0" width="40" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{m11}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement style="Detail" positionType="Float" x="744" y="0" width="50" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{acum}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="50">
+			<staticText>
+				<reportElement style="Column header" x="1" y="2" width="155" height="18" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Totales del reporte]]></text>
+			</staticText>
+			<frame>
+				<reportElement mode="Opaque" x="1" y="0" width="800" height="2" forecolor="#00447B" backcolor="#00447B"/>
+			</frame>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="239" y="2" width="50" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="289" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="330" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="410" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m5}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="371" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m4}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="491" y="2" width="40" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m7}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="532" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m8}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="574" y="2" width="40" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m9}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="451" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m6}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="615" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m10}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="654" y="2" width="39" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m11}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="745" y="2" width="50" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_acum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="694" y="2" width="40" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum_m12}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement mode="Opaque" x="1" y="20" width="800" height="2" forecolor="#00447B" backcolor="#00447B"/>
+			</frame>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+	<noData>
+		<band height="176">
+			<textField pattern="">
+				<reportElement x="644" y="25" width="157" height="10" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{year}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="551" y="25" width="93" height="10" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="551" y="35" width="93" height="10" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de impresión:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="644" y="35" width="157" height="10" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="98" y="123" width="625" height="45" forecolor="#00447B"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[NO SE ENCONTRARON RESULTADOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="0" width="454" height="20" forecolor="#00447B"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VENTAS MENSUALES POR CLIENTE]]></text>
+			</staticText>
+			<image hAlign="Right" isUsingCache="true">
+				<reportElement x="10" y="0" width="85" height="45" isRemoveLineWhenBlank="true"/>
+				<imageExpression class="java.awt.Image"><![CDATA[org.openbravo.erpCommon.utility.Utility.showImageLogo("yourcompanydoc",$V{org_id})]]></imageExpression>
+			</image>
+			<componentElement>
+				<reportElement x="193" y="25" width="279" height="23"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="dataset1">
+						<datasetParameter name="org_id">
+							<datasetParameterExpression><![CDATA[$P{org_id}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="agente">
+							<datasetParameterExpression><![CDATA[$P{agente}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="familia">
+							<datasetParameterExpression><![CDATA[$P{familia}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="subfamilia">
+							<datasetParameterExpression><![CDATA[$P{subfamilia}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="cliente">
+							<datasetParameterExpression><![CDATA[$P{cliente}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="marca">
+							<datasetParameterExpression><![CDATA[$P{marca}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="producto">
+							<datasetParameterExpression><![CDATA[$P{producto}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="servicio">
+							<datasetParameterExpression><![CDATA[$P{servicio}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="23" width="279">
+						<staticText>
+							<reportElement style="Column header" x="0" y="0" width="90" height="10" forecolor="#000000"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Unidad de negocio:]]></text>
+						</staticText>
+						<textField isStretchWithOverflow="true">
+							<reportElement style="Detail" positionType="Float" x="90" y="0" width="189" height="10"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8"/>
+							</textElement>
+							<textFieldExpression class="java.lang.String"><![CDATA[$F{organizacion}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement style="Column header" x="0" y="10" width="90" height="10" forecolor="#000000"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Cliente:]]></text>
+						</staticText>
+						<textField isStretchWithOverflow="true">
+							<reportElement style="Detail" positionType="Float" x="90" y="10" width="189" height="10"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="SansSerif" size="8"/>
+							</textElement>
+							<textFieldExpression class="java.lang.String"><![CDATA[$F{cliente}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</noData>
+</jasperReport>
